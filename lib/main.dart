@@ -11,7 +11,12 @@ class UserComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CircleAvatar(radius: 18, child: Icon(Icons.person));
+    return const CircleAvatar(
+      radius: 18,
+      child: Icon(Icons.account_circle_outlined),
+      backgroundColor: AppColors.primary,
+      foregroundColor: AppColors.secondary,
+    );
   }
 }
 
