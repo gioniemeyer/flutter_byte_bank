@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart'; // IMPORTANTE
 import 'package:mobile_byte_bank/theme/colors.dart';
 import 'package:mobile_byte_bank/components/index.dart'; // ou: import 'package:mobile_byte_bank/components/user_component.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeDateFormatting('pt_BR', null);
+
   runApp(const MyApp());
 }
 
@@ -34,15 +39,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        body: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('You have pushed the button this many times:'),
-              Text('0'),
-            ],
-          ),
-        ),
+        body: const Center(child: ContentBody(selectedItem: "Início")),
       ),
     );
   }
