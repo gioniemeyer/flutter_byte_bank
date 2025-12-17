@@ -7,3 +7,7 @@ export 'balance_content.dart';
 export 'statement.dart';
 export 'central_box.dart';
 export 'content_body.dart';
+export '../transactions/transaction.dart';
+export '../transactions/transaction_images.dart';
+export '../transactions/transaction_form.dart';
+export '../transactions/transaction_controller.dart';
