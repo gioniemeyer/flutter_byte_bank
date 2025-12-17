@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_byte_bank/routes.dart';
 import 'package:mobile_byte_bank/theme/colors.dart';
+import 'package:mobile_byte_bank/routes.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatelessWidget {
+  const RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,6 @@ class LoginPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Botão fechar/voltar
                 Align(
                   alignment: Alignment.topRight,
                   child: IconButton(
@@ -27,18 +26,18 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
 
                 Image.asset(
-                  'assets/images/login.png',
+                  'assets/images/register.png',
                   height: 220,
                   fit: BoxFit.contain,
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
                 const Text(
-                  'Login',
+                  'Preencha os campos abaixo para criar sua conta corrente!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,
@@ -49,24 +48,29 @@ class LoginPage extends StatelessWidget {
                 const SizedBox(height: 24),
 
                 const Text(
+                  'Nome',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,  
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _Input(
+                  hint: 'Digite seu nome completo',
+                ),
+
+                const SizedBox(height: 16),
+
+                const Text(
                   'Email',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    ),
+                    fontSize: 16,  
+                  ),
                 ),
                 const SizedBox(height: 8),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Digite seu email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                  ),
+                _Input(
+                  hint: 'Digite seu email',
                 ),
 
                 const SizedBox(height: 16),
@@ -75,28 +79,18 @@ class LoginPage extends StatelessWidget {
                   'Senha',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 16,  
                   ),
                 ),
                 const SizedBox(height: 8),
-                TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: 'Digite sua senha',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                  ),
+                _Input(
+                  hint: 'Digite sua senha',
+                  obscure: true,
                 ),
 
                 const SizedBox(height: 32),
 
-                Align(
-                  alignment: Alignment.center,
+                Center(
                   child: SizedBox(
                     width: 144,
                     height: 48,
@@ -109,21 +103,49 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        // FAZER VALIDAÇÃO DE LOGIN
+                        // FAZER VALIDAÇÃO DE CONTA
                         Navigator.of(context).pushNamed(Routes.inicio);
                       },
                       child: const Text(
-                        'Entrar',
+                        'Criar conta',
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class _Input extends StatelessWidget {
+  final String hint;
+  final bool obscure;
+
+  const _Input({
+    required this.hint,
+    this.obscure = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      obscureText: obscure,
+      decoration: InputDecoration(
+        hintText: hint,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
         ),
       ),
     );

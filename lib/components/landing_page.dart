@@ -60,7 +60,7 @@ class LandingPage extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
-                            // abrir conta
+                            Navigator.of(context).pushNamed(Routes.register);
                           },
                           child: const Text(
                             'Abrir conta',
