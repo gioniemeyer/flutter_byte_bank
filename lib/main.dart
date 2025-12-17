@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobile_byte_bank/components/home.dart';
 import 'package:mobile_byte_bank/components/landing_page.dart';
+import 'package:mobile_byte_bank/components/login.dart';
 import 'package:mobile_byte_bank/routes.dart';
 import 'package:mobile_byte_bank/state/sidebar_controller.dart';
 
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       initialRoute: Routes.landingPage,
       routes: {
         Routes.landingPage: (_) => LandingPage(),
+        Routes.login: (_) => LoginPage(),
         Routes.inicio: (_) => HomePage(
           controller: SidebarController(),
         ),

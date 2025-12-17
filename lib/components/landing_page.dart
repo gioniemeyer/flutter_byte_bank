@@ -62,7 +62,13 @@ class LandingPage extends StatelessWidget {
                           onPressed: () {
                             // abrir conta
                           },
-                          child: const Text('Abrir conta'),
+                          child: const Text(
+                            'Abrir conta',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -70,16 +76,25 @@ class LandingPage extends StatelessWidget {
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.secondaryText,
-                            side: const BorderSide(color: AppColors.secondaryText),
+                            side: const BorderSide(
+                              color: AppColors.secondaryText,
+                              width: 2,
+                            ),
                             padding: const EdgeInsets.all(18),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                           onPressed: () {
-                            Navigator.of(context).pushReplacementNamed(Routes.login);
+                            Navigator.of(context).pushNamed(Routes.login);
                           },
-                          child: const Text('Já tenho conta'),
+                          child: const Text(
+                            'Já tenho conta',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -106,25 +121,25 @@ class LandingPage extends StatelessWidget {
               image: 'assets/images/icon1.png',
               title: 'Conta e cartão gratuitos',
               description:
-                  'Isso mesmo, nossa conta é digital, sem custo fixo e mais que isso: sem tarifa de manutenção.',
+                'Isso mesmo, nossa conta é digital, sem custo fixo e mais que isso: sem tarifa de manutenção.',
             ),
             const _BenefitItem(
               image: 'assets/images/icon2.png',
               title: 'Saques sem custo',
               description:
-                  'Você pode sacar gratuitamente 4x por mês de qualquer Banco 24h.',
+                'Você pode sacar gratuitamente 4x por mês de qualquer Banco 24h.',
             ),
             const _BenefitItem(
               image: 'assets/images/icon3.png',
               title: 'Programa de pontos',
               description:
-                  'Você pode acumular pontos com suas compras no crédito sem pagar mensalidade!',
+                'Você pode acumular pontos com suas compras no crédito sem pagar mensalidade!',
             ),
             const _BenefitItem(
               image: 'assets/images/icon4.png',
               title: 'Seguro dispositivos',
               description:
-                  'Seus dispositivos móveis (computador e laptop) protegidos por uma mensalidade simbólica.',
+                'Seus dispositivos móveis (computador e laptop) protegidos por uma mensalidade simbólica.',
             ),
 
             const SizedBox(height: 32),
