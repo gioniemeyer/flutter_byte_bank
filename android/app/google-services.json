@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "180315485916",
+    "project_id": "bytebank-flutter-28aba",
+    "storage_bucket": "bytebank-flutter-28aba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:180315485916:android:a3c1e2182b12b00887e619",
+        "android_client_info": {
+          "package_name": "com.example.mobile_byte_bank"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3TxbbYrMaTcZd5wIlc_9AWBx0cqFKOEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

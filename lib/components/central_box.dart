@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -51,9 +52,12 @@ class CentralBox extends StatelessWidget {
   }
 
   Widget _buildContent() {
+    final user = FirebaseAuth.instance.currentUser;
+    final String nome = user?.displayName ?? 'Usuário';
+
     switch (content) {
       case 'welcome':
-        return const Welcome(userName: 'Joana', balance: 1000.0);
+        return Welcome(userName: nome, balance: 1000.0);
 
       case 'transaction':
         // Provider local apenas para o bloco de transação (sempre mobile)
