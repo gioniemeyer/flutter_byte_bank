@@ -21,7 +21,7 @@ class CentralBox extends StatelessWidget {
     const topOffset = 48.0;
 
     final bgColor = content == 'welcome'
-        ? AppColors.primary
+        ? AppColors.primaryColor
         : content == 'transaction'
         ? AppColors.backgroundBox
         : AppColors.primaryText;

@@ -55,7 +55,7 @@ class SidebarList extends StatelessWidget {
                               ? FontWeight.w700
                               : FontWeight.w400,
                           color: selected
-                              ? AppColors.secondary
+                              ? AppColors.secondaryColor
                               : AppColors.secondaryText,
                         ),
                       ),
@@ -70,7 +70,7 @@ class SidebarList extends StatelessWidget {
               child: IconButton(
                 onPressed: onClose,
                 icon: const Icon(Icons.close),
-                color: AppColors.third,
+                color: AppColors.thirdColor,
                 tooltip: 'Fechar',
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),

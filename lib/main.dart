@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         backgroundColor: AppColors.background,
         appBar: AppBar(
           elevation: 8,
-          backgroundColor: AppColors.primary,
+          backgroundColor: AppColors.primaryColor,
           foregroundColor: AppColors.primaryText,
           flexibleSpace: SafeArea(
             child: Container(

@@ -115,7 +115,7 @@ class _TransactionFormState extends State<TransactionForm> {
             decoration: BoxDecoration(
               color: AppColors.primaryText,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppColors.primary, width: 1),
+              border: Border.all(color: AppColors.primaryColor, width: 1),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 12),
             alignment: Alignment.center,
@@ -161,21 +161,21 @@ class _TransactionFormState extends State<TransactionForm> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(
-                    color: AppColors.primary,
+                    color: AppColors.primaryColor,
                     width: 1,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(
-                    color: AppColors.primary,
+                    color: AppColors.primaryColor,
                     width: 1,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(
-                    color: AppColors.primary,
+                    color: AppColors.primaryColor,
                     width: 1,
                   ),
                 ),
@@ -200,7 +200,7 @@ class _TransactionFormState extends State<TransactionForm> {
                       ? null
                       : _submit,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: AppColors.primaryColor,
                     foregroundColor: AppColors.primaryText,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -231,9 +231,9 @@ class _TransactionFormState extends State<TransactionForm> {
                       widget.onCancel?.call();
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary,
+                      foregroundColor: AppColors.primaryColor,
                       side: const BorderSide(
-                        color: AppColors.primary,
+                        color: AppColors.primaryColor,
                         width: 1,
                       ),
                       shape: RoundedRectangleBorder(

@@ -9,8 +9,8 @@ class UserComponent extends StatelessWidget {
     return const CircleAvatar(
       radius: 18,
       child: Icon(Icons.account_circle_outlined),
-      backgroundColor: AppColors.primary,
-      foregroundColor: AppColors.secondary,
+      backgroundColor: AppColors.primaryColor,
+      foregroundColor: AppColors.secondaryColor,
     );
   }
 }
