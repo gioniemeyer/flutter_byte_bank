@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import 'package:mobile_byte_bank/theme/colors.dart';
 import 'package:mobile_byte_bank/components/welcome.dart';
 
-import 'package:mobile_byte_bank/transactions/transaction_controller.dart';
 import 'package:mobile_byte_bank/transactions/transaction.dart';
 
 /// Caixa central da aplicação. Ajusta estilo com base no content.
