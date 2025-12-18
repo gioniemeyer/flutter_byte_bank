@@ -56,13 +56,7 @@ class CentralBox extends StatelessWidget {
         return const Welcome(userName: 'Joana', balance: 1000.0);
 
       case 'transaction':
-        // Provider local apenas para o bloco de transação (sempre mobile)
-        return ChangeNotifierProvider(
-          create: (_) => TransactionController(),
-          child: Transaction(
-            selectedItem: selectedItem ?? 'Início', // repassa aqui
-          ),
-        );
+        return Transaction(selectedItem: selectedItem ?? 'Início');
 
       case 'investments':
         return const SizedBox(

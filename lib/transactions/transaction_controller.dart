@@ -60,4 +60,12 @@ class TransactionController extends ChangeNotifier {
     );
     notifyListeners();
   }
+
+  void deleteTransaction(String id) {
+    final index = _transactions.indexWhere((t) => t.id == id);
+    if (index != -1) {
+      _transactions.removeAt(index);
+      notifyListeners();
+    }
+  }
 }

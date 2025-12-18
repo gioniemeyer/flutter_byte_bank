@@ -101,7 +101,7 @@ class _TransactionFormState extends State<TransactionForm> {
     final editingId = controller.editingId;
 
     // Padroniza a largura de todos os campos/botões
-    final double fieldWidth = 280;
+    final double fieldWidth = 260;
 
     return Padding(
       padding: const EdgeInsets.only(top: 12, left: 24, right: 24),
@@ -123,7 +123,7 @@ class _TransactionFormState extends State<TransactionForm> {
               child: DropdownButton<String>(
                 value: type,
                 hint: Text(
-                  'Selecione o tipo de transação',
+                  'Tipo de transação',
                   style: TextStyle(color: Colors.grey[600]),
                 ),
                 items: const [
