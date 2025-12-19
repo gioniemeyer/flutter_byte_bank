@@ -21,7 +21,7 @@ class _MenuDrawerButtonState extends State<MenuDrawerButton> {
       builder: (context) {
         return Positioned(
           // Posição relativa à tela inteira
-          top: 2,
+          top: 86,
           left: 2, // canto direito
           child: Material(
             elevation: 8,
