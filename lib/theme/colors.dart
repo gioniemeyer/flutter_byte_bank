@@ -20,4 +20,7 @@ class AppColors {
   static const Color primary = Color(0xFF004D61); // --primaryColor: #004d61
   static const Color secondary = Color(0xFFFF5031); // --secondaryColor: #ff5031
   static const Color third = Color(0xFF47A138); // --thirdColor: #47a138
+
+  // Messages
+  static const Color error = Color(0xFFBF1313);
 }

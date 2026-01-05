@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobile_byte_bank/components/home.dart';
@@ -10,6 +11,9 @@ import 'package:mobile_byte_bank/state/sidebar_controller.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('pt_BR', null);
+
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
