@@ -52,20 +52,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 const Text(
                   'Preencha os campos abaixo para criar sua conta corrente!',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(height: 24),
 
                 const Text(
                   'Nome',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,  
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 const SizedBox(height: 8),
                 _Input(
@@ -77,25 +71,16 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const Text(
                   'Email',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,  
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 const SizedBox(height: 8),
-                _Input(
-                  controller: _emailController,
-                  hint: 'Digite seu email',
-                ),
+                _Input(controller: _emailController, hint: 'Digite seu email'),
 
                 const SizedBox(height: 16),
 
                 const Text(
                   'Senha',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,  
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 const SizedBox(height: 8),
                 _Input(
@@ -106,12 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const SizedBox(height: 12),
 
-                Text(
-                  _errorMessage,
-                  style: TextStyle(
-                    color: AppColors.error,
-                  ),
-                ),
+                Text(_errorMessage, style: TextStyle(color: AppColors.error)),
 
                 const SizedBox(height: 28),
 
@@ -121,7 +101,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     height: 48,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.secondary,
+                        backgroundColor: AppColors.secondaryColor,
                         foregroundColor: AppColors.primaryText,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -136,10 +116,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         });
 
                         try {
-                          final userCredential = await _auth.createUserWithEmailAndPassword(
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                          );
+                          final userCredential = await _auth
+                              .createUserWithEmailAndPassword(
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                              );
 
                           await userCredential.user!.updateDisplayName(
                             _nameController.text.trim(),
@@ -147,7 +128,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
                           await userCredential.user!.reload();
 
-                          Navigator.of(context).pushReplacementNamed(Routes.inicio);
+                          Navigator.of(
+                            context,
+                          ).pushReplacementNamed(Routes.inicio);
                         } on FirebaseAuthException catch (e) {
                           setState(() {
                             _errorMessage = _getFirebaseError(e);
@@ -165,18 +148,20 @@ class _RegisterPageState extends State<RegisterPage> {
                         }
                       },
                       child: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryText),
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColors.primaryText,
+                                ),
+                              ),
+                            )
+                          : const Text(
+                              'Criar conta',
+                              style: TextStyle(fontSize: 16),
                             ),
-                          )
-                        : const Text(
-                            'Criar conta',
-                            style: TextStyle(fontSize: 16),
-                          ),
                     ),
                   ),
                 ),
@@ -209,9 +194,7 @@ class _Input extends StatelessWidget {
       obscureText: obscure,
       decoration: InputDecoration(
         hintText: hint,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,

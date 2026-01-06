@@ -52,20 +52,14 @@ class _LoginPageState extends State<LoginPage> {
                 const Text(
                   'Login',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(height: 24),
 
                 const Text(
                   'Email',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 const SizedBox(height: 8),
                 TextField(
@@ -86,10 +80,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 const Text(
                   'Senha',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 const SizedBox(height: 8),
                 TextField(
@@ -109,12 +100,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 12),
 
-                Text(
-                  _errorMessage,
-                  style: TextStyle(
-                    color: AppColors.error,
-                  ),
-                ),
+                Text(_errorMessage, style: TextStyle(color: AppColors.error)),
 
                 const SizedBox(height: 28),
 
@@ -125,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 48,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.secondary,
+                        backgroundColor: AppColors.secondaryColor,
                         foregroundColor: AppColors.primaryText,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -145,8 +131,10 @@ class _LoginPageState extends State<LoginPage> {
                             password: _passwordController.text,
                           );
 
-                          Navigator.of(context).pushReplacementNamed(Routes.inicio);
-                        } on FirebaseAuthException catch (e) {                        
+                          Navigator.of(
+                            context,
+                          ).pushReplacementNamed(Routes.inicio);
+                        } on FirebaseAuthException catch (e) {
                           setState(() {
                             _errorMessage = _getFirebaseError(e.code);
                           });
@@ -163,18 +151,20 @@ class _LoginPageState extends State<LoginPage> {
                         }
                       },
                       child: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryText),
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColors.primaryText,
+                                ),
+                              ),
+                            )
+                          : const Text(
+                              'Entrar',
+                              style: TextStyle(fontSize: 16),
                             ),
-                          )
-                        : const Text(
-                            'Entrar',
-                            style: TextStyle(fontSize: 16),
-                          ),
                     ),
                   ),
                 ),

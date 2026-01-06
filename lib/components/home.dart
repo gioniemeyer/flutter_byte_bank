@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 8,
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.primaryColor,
         foregroundColor: AppColors.primaryText,
         flexibleSpace: SafeArea(
           child: Container(
@@ -32,9 +32,7 @@ class HomePage extends StatelessWidget {
       body: AnimatedBuilder(
         animation: controller,
         builder: (_, _) {
-          return ContentBody(
-            selectedItem: controller.selectedItem,
-          );
+          return ContentBody(selectedItem: controller.selectedItem);
         },
       ),
     );

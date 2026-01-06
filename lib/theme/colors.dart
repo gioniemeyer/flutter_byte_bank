@@ -24,4 +24,6 @@ class AppColors {
     0xFFFF5031,
   ); // --secondaryColor: #ff5031
   static const Color thirdColor = Color(0xFF47A138); // --thirdColor: #47a138
+  // Messages
+  static const Color error = Color(0xFFBF1313);
 }
