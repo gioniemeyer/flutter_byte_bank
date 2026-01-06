@@ -4,7 +4,6 @@ import 'package:mobile_byte_bank/theme/colors.dart';
 
 typedef VoidCallbackNullable = void Function()?;
 
-/// SidebarList apenas Mobile (clicável, com Material)
 class SidebarList extends StatelessWidget {
   final SidebarController controller;
   final VoidCallbackNullable onClose;
@@ -21,62 +20,69 @@ class SidebarList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.background, // Material dá superfície para gestos
-      child: SizedBox(
-        width: 172,
-        height: 256,
-        child: Stack(
-          children: [
-            ListView.separated(
-              padding: const EdgeInsets.only(top: 8),
-              itemCount: itens.length,
-              separatorBuilder: (_, __) =>
-                  const Divider(thickness: 1, height: 1),
-              itemBuilder: (context, index) {
-                final text = itens[index];
-                final selected = controller.selectedItem == text;
+      color: AppColors.background,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: SizedBox(
+          width: 172,
+          height: 210,
+          child: Stack(
+            children: [
+              ListView.separated(
+                padding: const EdgeInsets.only(top: 8),
+                itemCount: itens.length,
+                separatorBuilder: (_, __) =>
+                    const Divider(thickness: 1, height: 1),
+                itemBuilder: (context, index) {
+                  final text = itens[index];
+                  final selected = controller.selectedItem == text;
 
-                return InkWell(
-                  onTap: () {
-                    controller.setSelectedItem(text);
-                    onClose?.call();
-                  },
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: Center(
-                      child: Text(
-                        text,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: selected
-                              ? FontWeight.w700
-                              : FontWeight.w400,
-                          color: selected
-                              ? AppColors.secondaryColor
-                              : AppColors.secondaryText,
+                  return InkWell(
+                    onTap: () {
+                      controller.setSelectedItem(text);
+                      onClose?.call();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: Center(
+                        child: Text(
+                          text,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: selected
+                                ? FontWeight.w700
+                                : FontWeight.w400,
+                            color: selected
+                                ? AppColors.secondaryColor
+                                : AppColors.secondaryText,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-            Positioned(
-              top: 4,
-              right: 4,
-              child: IconButton(
-                onPressed: onClose,
-                icon: const Icon(Icons.close),
-                color: AppColors.thirdColor,
-                tooltip: 'Fechar',
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
+                  );
+                },
               ),
-            ),
-          ],
+              Positioned(
+                top: -10,
+                right: 0,
+                child: IconButton(
+                  onPressed: onClose,
+                  icon: const Icon(Icons.close),
+                  iconSize: 20,
+                  color: AppColors.thirdColor,
+                  tooltip: 'Fechar',
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 20,
+                    minHeight: 20,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

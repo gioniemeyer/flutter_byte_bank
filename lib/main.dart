@@ -1,11 +1,19 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:mobile_byte_bank/theme/colors.dart';
-import 'package:mobile_byte_bank/components/index.dart';
+import 'package:mobile_byte_bank/components/home.dart';
+import 'package:mobile_byte_bank/components/landing_page.dart';
+import 'package:mobile_byte_bank/components/login.dart';
+import 'package:mobile_byte_bank/components/register.dart';
+import 'package:mobile_byte_bank/routes.dart';
+import 'package:mobile_byte_bank/state/sidebar_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('pt_BR', null);
+
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
@@ -16,26 +24,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          elevation: 8,
-          backgroundColor: AppColors.primaryColor,
-          foregroundColor: AppColors.primaryText,
-          flexibleSpace: SafeArea(
-            child: Container(
-              height: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [MenuDrawerButton(), UserComponent()],
-              ),
-            ),
-          ),
-        ),
-        body: const Center(child: ContentBody(selectedItem: "Início")),
-      ),
+      initialRoute: Routes.landingPage,
+      routes: {
+        Routes.landingPage: (_) => LandingPage(),
+        Routes.login: (_) => LoginPage(),
+        Routes.register: (_) => RegisterPage(),
+        Routes.inicio: (_) => HomePage(controller: SidebarController()),
+      },
     );
   }
 }

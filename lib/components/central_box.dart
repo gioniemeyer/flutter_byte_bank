@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mobile_byte_bank/theme/colors.dart';
@@ -49,9 +50,12 @@ class CentralBox extends StatelessWidget {
   }
 
   Widget _buildContent() {
+    final user = FirebaseAuth.instance.currentUser;
+    final String nome = user?.displayName ?? 'Usuário';
+
     switch (content) {
       case 'welcome':
-        return const Welcome(userName: 'Joana', balance: 1000.0);
+        return Welcome(userName: nome, balance: 1000.0);
 
       case 'transaction':
         return Transaction(selectedItem: selectedItem ?? 'Início');
