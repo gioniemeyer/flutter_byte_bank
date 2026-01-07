@@ -57,8 +57,6 @@ class StatementItem extends StatelessWidget {
     return GestureDetector(
       onTap: isClickable ? onClick : null,
       child: Container(
-        width: 240,
-        height: 76, // reduzido de 78 para 76
         margin: const EdgeInsets.all(8),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         clipBehavior: Clip.hardEdge, // evita overflow visual no web
@@ -105,7 +103,7 @@ class StatementItem extends StatelessWidget {
                 Text(
                   _dateBR(date),
                   maxLines: 1,
-                  overflow: TextOverflow.clip,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 13,

@@ -27,8 +27,8 @@ class CentralBox extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: lateralPadding),
-      child: Align(
-        alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: double.infinity),
         child: Container(
           margin: const EdgeInsets.only(top: topOffset, bottom: 12),
           padding: const EdgeInsets.all(12),

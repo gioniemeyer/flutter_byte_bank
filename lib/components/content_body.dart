@@ -17,36 +17,33 @@ class ContentBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => TransactionController(),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          // Largura disponível e altura disponível do body
-          final maxWidth = constraints.maxWidth;
-          final maxHeight = constraints.maxHeight;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Largura disponível e altura disponível do body
+        final maxWidth = constraints.maxWidth;
+        final maxHeight = constraints.maxHeight;
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: maxWidth,
-                minHeight: maxHeight, // força altura mínima igual à tela
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const CentralBox(content: 'welcome'),
-                  CentralBox(
-                    content: _showTransaction ? 'transaction' : 'investments',
-                    selectedItem: selectedItem,
-                  ),
-                  const Statement(), // agora recebe altura estável do pai
-                ],
-              ),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: maxWidth,
+              minHeight: maxHeight, // força altura mínima igual à tela
             ),
-          );
-        },
-      ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const CentralBox(content: 'welcome'),
+                CentralBox(
+                  content: _showTransaction ? 'transaction' : 'investments',
+                  selectedItem: selectedItem,
+                ),
+                const Statement(), // agora recebe altura estável do pai
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
