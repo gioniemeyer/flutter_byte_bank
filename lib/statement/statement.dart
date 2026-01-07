@@ -109,7 +109,6 @@ class _StatementState extends State<Statement> {
     final paginated = filtered.sublist(start, end);
 
     return Container(
-      width: double.infinity, // largura igual aos demais cards
       margin: const EdgeInsets.only(top: 24),
       padding: const EdgeInsets.all(12), // igual ao CentralBox
       decoration: BoxDecoration(
@@ -126,7 +125,7 @@ class _StatementState extends State<Statement> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: SizedBox(
-              width: 240,
+              width: double.infinity,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

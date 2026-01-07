@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:mobile_byte_bank/theme/colors.dart';
 import 'package:mobile_byte_bank/components/welcome.dart';
-
 import 'package:mobile_byte_bank/transactions/transaction.dart';
+import 'package:mobile_byte_bank/transactions/transaction_controller.dart';
+import 'package:provider/provider.dart';
 
 /// Caixa central da aplicação. Ajusta estilo com base no content.
 /// Suporta: 'welcome' | 'transaction' | 'investments'
@@ -43,19 +43,21 @@ class CentralBox extends StatelessWidget {
               ),
             ],
           ),
-          child: _buildContent(),
+          child: _buildContent(context),
         ),
       ),
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     final String nome = user?.displayName ?? 'Usuário';
+    final controller = context.watch<TransactionController>();
+    final balance = controller.totalBalance;
 
     switch (content) {
       case 'welcome':
-        return Welcome(userName: nome, balance: 1000.0);
+        return Welcome(userName: nome, balance: balance);
 
       case 'transaction':
         return Transaction(selectedItem: selectedItem ?? 'Início');

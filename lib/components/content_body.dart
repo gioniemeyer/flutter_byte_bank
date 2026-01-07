@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:mobile_byte_bank/components/central_box.dart';
 import 'package:mobile_byte_bank/statement/statement.dart';
-
-import 'package:mobile_byte_bank/transactions/transaction_controller.dart';
 
 /// Corpo principal da aplicação (mobile).
 class ContentBody extends StatelessWidget {
