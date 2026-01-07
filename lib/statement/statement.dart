@@ -333,84 +333,107 @@ class _StatementState extends State<Statement> {
           // Rodapé: seletor de rowsPerPage + paginação
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Itens por página
-                Container(
-                  height: 40,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryText,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.primaryColor, width: 1),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<int>(
-                      value: rowsPerPage,
-                      items: optionsRowsPerPage
-                          .map(
-                            (v) => DropdownMenuItem(
-                              value: v,
-                              child: Text('$v itens/página'),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (v) {
-                        if (v == null) return;
-                        setState(() {
-                          rowsPerPage = v;
-                          page = 1; // reset
-                        });
-                      },
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                // Divide a largura disponível em dois blocos iguais
+                final double boxWidth = (constraints.maxWidth - 12) / 2;
+
+                return Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    // === BOX 1: Itens por página ===
+                    SizedBox(
+                      width: boxWidth,
+                      child: Container(
+                        height: 40,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryText,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.primaryColor,
+                            width: 1,
+                          ),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<int>(
+                            value: rowsPerPage,
+                            isExpanded: true,
+                            items: optionsRowsPerPage
+                                .map(
+                                  (v) => DropdownMenuItem(
+                                    value: v,
+                                    child: Text('$v itens/pág'),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (v) {
+                              if (v == null) return;
+                              setState(() {
+                                rowsPerPage = v;
+                                page = 1;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
 
-                const SizedBox(width: 12),
-
-                // Paginação (Anterior/Próximo)
-                Container(
-                  height: 40,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryText,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.primaryColor, width: 1),
-                  ),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        tooltip: 'Anterior',
-                        onPressed: page > 1
-                            ? () => setState(() => page -= 1)
-                            : null,
-                        icon: const Icon(
-                          Icons.chevron_left,
-                          color: AppColors.thirdText,
+                    // === BOX 2: Paginação ===
+                    SizedBox(
+                      width: boxWidth,
+                      child: Container(
+                        height: 40,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryText,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.primaryColor,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              padding: EdgeInsets.zero,
+                              tooltip: 'Anterior',
+                              onPressed: page > 1
+                                  ? () => setState(() => page -= 1)
+                                  : null,
+                              icon: const Icon(
+                                Icons.chevron_left,
+                                color: AppColors.thirdText,
+                              ),
+                            ),
+                            Text(
+                              '$page / $totalPages',
+                              style: const TextStyle(
+                                color: AppColors.thirdText,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            IconButton(
+                              padding: EdgeInsets.zero,
+                              tooltip: 'Próximo',
+                              onPressed: page < totalPages
+                                  ? () => setState(() => page += 1)
+                                  : null,
+                              icon: const Icon(
+                                Icons.chevron_right,
+                                color: AppColors.thirdText,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Text(
-                        '$page / $totalPages',
-                        style: const TextStyle(
-                          color: AppColors.thirdText,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      IconButton(
-                        tooltip: 'Próximo',
-                        onPressed: page < totalPages
-                            ? () => setState(() => page += 1)
-                            : null,
-                        icon: const Icon(
-                          Icons.chevron_right,
-                          color: AppColors.thirdText,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ],
