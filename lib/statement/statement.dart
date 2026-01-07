@@ -109,8 +109,8 @@ class _StatementState extends State<Statement> {
     final paginated = filtered.sublist(start, end);
 
     return Container(
-      margin: const EdgeInsets.only(top: 24),
-      padding: const EdgeInsets.all(12), // igual ao CentralBox
+      margin: const EdgeInsets.only(top: 24, bottom: 24),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
       decoration: BoxDecoration(
         color: AppColors.primaryText,
         borderRadius: BorderRadius.circular(8),
@@ -335,9 +335,6 @@ class _StatementState extends State<Statement> {
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                // Divide a largura disponível em dois blocos iguais
-                final double boxWidth = (constraints.maxWidth - 12) / 2;
-
                 return Wrap(
                   alignment: WrapAlignment.center,
                   spacing: 12,
@@ -345,7 +342,6 @@ class _StatementState extends State<Statement> {
                   children: [
                     // === BOX 1: Itens por página ===
                     SizedBox(
-                      width: boxWidth,
                       child: Container(
                         height: 40,
                         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -383,7 +379,6 @@ class _StatementState extends State<Statement> {
 
                     // === BOX 2: Paginação ===
                     SizedBox(
-                      width: boxWidth,
                       child: Container(
                         height: 40,
                         padding: const EdgeInsets.symmetric(horizontal: 8),

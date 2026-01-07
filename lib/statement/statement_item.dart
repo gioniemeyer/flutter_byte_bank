@@ -58,7 +58,6 @@ class StatementItem extends StatelessWidget {
       onTap: isClickable ? onClick : null,
       child: Container(
         margin: const EdgeInsets.all(8),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         clipBehavior: Clip.hardEdge, // evita overflow visual no web
         decoration: BoxDecoration(
           color: isSelected ? AppColors.background : Colors.transparent,
