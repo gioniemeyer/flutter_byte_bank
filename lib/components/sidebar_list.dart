@@ -4,7 +4,6 @@ import 'package:mobile_byte_bank/theme/colors.dart';
 
 typedef VoidCallbackNullable = void Function()?;
 
-/// SidebarList apenas Mobile (clicável, com Material)
 class SidebarList extends StatelessWidget {
   final SidebarController controller;
   final VoidCallbackNullable onClose;
@@ -21,7 +20,7 @@ class SidebarList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.background, // Material dá superfície para gestos
+      color: AppColors.background,
       child: Padding(
         padding: const EdgeInsets.only(top: 10),
         child: SizedBox(
@@ -33,11 +32,11 @@ class SidebarList extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8),
                 itemCount: itens.length,
                 separatorBuilder: (_, __) =>
-                  const Divider(thickness: 1, height: 1),
+                    const Divider(thickness: 1, height: 1),
                 itemBuilder: (context, index) {
                   final text = itens[index];
                   final selected = controller.selectedItem == text;
-        
+
                   return InkWell(
                     onTap: () {
                       controller.setSelectedItem(text);
@@ -54,11 +53,11 @@ class SidebarList extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: selected
-                              ? FontWeight.w700
-                              : FontWeight.w400,
+                                ? FontWeight.w700
+                                : FontWeight.w400,
                             color: selected
-                              ? AppColors.secondary
-                              : AppColors.secondaryText,
+                                ? AppColors.secondaryColor
+                                : AppColors.secondaryText,
                           ),
                         ),
                       ),
@@ -73,7 +72,7 @@ class SidebarList extends StatelessWidget {
                   onPressed: onClose,
                   icon: const Icon(Icons.close),
                   iconSize: 20,
-                  color: AppColors.third,
+                  color: AppColors.thirdColor,
                   tooltip: 'Fechar',
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(

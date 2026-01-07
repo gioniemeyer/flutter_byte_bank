@@ -2,11 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mobile_byte_bank/components/home.dart';
+import 'package:mobile_byte_bank/components/index.dart';
 import 'package:mobile_byte_bank/components/landing_page.dart';
 import 'package:mobile_byte_bank/components/login.dart';
 import 'package:mobile_byte_bank/components/register.dart';
 import 'package:mobile_byte_bank/routes.dart';
 import 'package:mobile_byte_bank/state/sidebar_controller.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +16,12 @@ void main() async {
 
   await Firebase.initializeApp();
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => TransactionController(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -25,13 +32,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: Routes.landingPage,
+
       routes: {
         Routes.landingPage: (_) => LandingPage(),
         Routes.login: (_) => LoginPage(),
         Routes.register: (_) => RegisterPage(),
-        Routes.inicio: (_) => HomePage(
-          controller: SidebarController(),
-        ),
+        Routes.inicio: (_) => HomePage(controller: SidebarController()),
       },
     );
   }

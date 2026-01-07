@@ -1,12 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:mobile_byte_bank/theme/colors.dart';
 import 'package:mobile_byte_bank/components/welcome.dart';
-
-import 'package:mobile_byte_bank/transactions/transaction_controller.dart';
 import 'package:mobile_byte_bank/transactions/transaction.dart';
+import 'package:mobile_byte_bank/transactions/transaction_controller.dart';
+import 'package:provider/provider.dart';
 
 /// Caixa central da aplicação. Ajusta estilo com base no content.
 /// Suporta: 'welcome' | 'transaction' | 'investments'
@@ -22,15 +20,15 @@ class CentralBox extends StatelessWidget {
     const topOffset = 48.0;
 
     final bgColor = content == 'welcome'
-        ? AppColors.primary
+        ? AppColors.primaryColor
         : content == 'transaction'
         ? AppColors.backgroundBox
         : AppColors.primaryText;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: lateralPadding),
-      child: Align(
-        alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: double.infinity),
         child: Container(
           margin: const EdgeInsets.only(top: topOffset, bottom: 12),
           padding: const EdgeInsets.all(12),
@@ -45,28 +43,24 @@ class CentralBox extends StatelessWidget {
               ),
             ],
           ),
-          child: _buildContent(),
+          child: _buildContent(context),
         ),
       ),
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     final String nome = user?.displayName ?? 'Usuário';
+    final controller = context.watch<TransactionController>();
+    final balance = controller.totalBalance;
 
     switch (content) {
       case 'welcome':
-        return Welcome(userName: nome, balance: 1000.0);
+        return Welcome(userName: nome, balance: balance);
 
       case 'transaction':
-        // Provider local apenas para o bloco de transação (sempre mobile)
-        return ChangeNotifierProvider(
-          create: (_) => TransactionController(),
-          child: Transaction(
-            selectedItem: selectedItem ?? 'Início', // repassa aqui
-          ),
-        );
+        return Transaction(selectedItem: selectedItem ?? 'Início');
 
       case 'investments':
         return const SizedBox(

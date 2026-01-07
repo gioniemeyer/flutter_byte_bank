@@ -45,7 +45,7 @@ class _MenuDrawerButtonState extends State<MenuDrawerButton> {
     return IconButton(
       onPressed: openSidebar,
       icon: const Icon(Icons.menu),
-      color: AppColors.secondary,
+      color: AppColors.secondaryColor,
       tooltip: 'Abrir menu',
     );
   }

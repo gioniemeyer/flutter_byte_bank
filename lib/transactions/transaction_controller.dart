@@ -21,6 +21,18 @@ class TransactionController extends ChangeNotifier {
           ),
         );
 
+  double get totalBalance {
+    double total = 0;
+    for (final t in _transactions) {
+      if (t.type == 'Depósito') {
+        total += t.value;
+      } else if (t.type == 'Transferência') {
+        total -= t.value;
+      }
+    }
+    return total;
+  }
+
   void setEditingId(String? id) {
     _editingId = id;
     notifyListeners();
@@ -59,5 +71,13 @@ class TransactionController extends ChangeNotifier {
       date: date ?? current.date,
     );
     notifyListeners();
+  }
+
+  void deleteTransaction(String id) {
+    final index = _transactions.indexWhere((t) => t.id == id);
+    if (index != -1) {
+      _transactions.removeAt(index);
+      notifyListeners();
+    }
   }
 }

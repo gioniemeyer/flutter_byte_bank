@@ -24,7 +24,7 @@ class LandingPage extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(30),
-              color: AppColors.primary,
+              color: AppColors.primaryColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -121,25 +121,25 @@ class LandingPage extends StatelessWidget {
               image: 'assets/images/icon1.png',
               title: 'Conta e cartão gratuitos',
               description:
-                'Isso mesmo, nossa conta é digital, sem custo fixo e mais que isso: sem tarifa de manutenção.',
+                  'Isso mesmo, nossa conta é digital, sem custo fixo e mais que isso: sem tarifa de manutenção.',
             ),
             const _BenefitItem(
               image: 'assets/images/icon2.png',
               title: 'Saques sem custo',
               description:
-                'Você pode sacar gratuitamente 4x por mês de qualquer Banco 24h.',
+                  'Você pode sacar gratuitamente 4x por mês de qualquer Banco 24h.',
             ),
             const _BenefitItem(
               image: 'assets/images/icon3.png',
               title: 'Programa de pontos',
               description:
-                'Você pode acumular pontos com suas compras no crédito sem pagar mensalidade!',
+                  'Você pode acumular pontos com suas compras no crédito sem pagar mensalidade!',
             ),
             const _BenefitItem(
               image: 'assets/images/icon4.png',
               title: 'Seguro dispositivos',
               description:
-                'Seus dispositivos móveis (computador e laptop) protegidos por uma mensalidade simbólica.',
+                  'Seus dispositivos móveis (computador e laptop) protegidos por uma mensalidade simbólica.',
             ),
 
             const SizedBox(height: 32),
@@ -171,7 +171,7 @@ class _BenefitItem extends StatelessWidget {
             child: Image.asset(
               image,
               fit: BoxFit.contain,
-              color: AppColors.third,
+              color: AppColors.thirdColor,
               height: 56,
             ),
           ),
@@ -182,17 +182,14 @@ class _BenefitItem extends StatelessWidget {
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
-              color: AppColors.third,
+              color: AppColors.thirdColor,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             description,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.thirdText,
-              fontSize: 16,
-            ),
+            style: const TextStyle(color: AppColors.thirdText, fontSize: 16),
           ),
         ],
       ),

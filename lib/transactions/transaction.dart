@@ -16,7 +16,7 @@ class Transaction extends StatelessWidget {
     final editingId = controller.editingId;
 
     return SizedBox(
-      height: 655, // mobile
+      height: 655,
       width: double.infinity,
       child: Stack(
         clipBehavior: Clip.none,

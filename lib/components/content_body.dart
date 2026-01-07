@@ -1,38 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:mobile_byte_bank/components/central_box.dart';
-import 'package:mobile_byte_bank/components/statement.dart';
-
-import 'package:mobile_byte_bank/transactions/transaction_controller.dart';
-import 'package:mobile_byte_bank/transactions/transaction.dart';
+import 'package:mobile_byte_bank/statement/statement.dart';
 
 /// Corpo principal da aplicação (mobile).
 class ContentBody extends StatelessWidget {
-  final String selectedItem; // "Início", "Transferências", "Investimentos"
+  final String selectedItem;
 
   const ContentBody({super.key, required this.selectedItem});
 
+  bool get _showTransaction =>
+      selectedItem == 'Início' || selectedItem == 'Transferências';
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // Box de boas-vindas (cor primária)
-          const CentralBox(content: 'welcome'),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Largura disponível e altura disponível do body
+        final maxWidth = constraints.maxWidth;
+        final maxHeight = constraints.maxHeight;
 
-          CentralBox(
-            content: 'transaction',
-            selectedItem: selectedItem, // repassa aqui
+        return SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: maxWidth,
+              minHeight: maxHeight, // força altura mínima igual à tela
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const CentralBox(content: 'welcome'),
+                CentralBox(
+                  content: _showTransaction ? 'transaction' : 'investments',
+                  selectedItem: selectedItem,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Statement(),
+                ),
+              ],
+            ),
           ),
-          const CentralBox(content: 'investments'),
-
-          // Extrato
-          Statement(),
-        ],
-      ),
+        );
+      },
     );
   }
 }

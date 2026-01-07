@@ -30,7 +30,9 @@ class UserMenu extends StatelessWidget {
                       onClose?.call();
 
                       if (context.mounted) {
-                        Navigator.of(context).pushReplacementNamed(Routes.login);
+                        Navigator.of(
+                          context,
+                        ).pushReplacementNamed(Routes.login);
                       }
                     },
                     child: const SizedBox(
@@ -56,7 +58,7 @@ class UserMenu extends StatelessWidget {
                   onPressed: onClose,
                   icon: const Icon(Icons.close),
                   iconSize: 20,
-                  color: AppColors.third,
+                  color: AppColors.thirdColor,
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(
                     minWidth: 20,

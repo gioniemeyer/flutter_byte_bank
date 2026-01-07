@@ -43,8 +43,8 @@ class _UserComponentState extends State<UserComponent> {
       onTap: openMenu,
       child: const CircleAvatar(
         radius: 18,
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.secondary,
+        backgroundColor: AppColors.primaryColor,
+        foregroundColor: AppColors.secondaryColor,
         child: Icon(Icons.account_circle_outlined),
       ),
     );
