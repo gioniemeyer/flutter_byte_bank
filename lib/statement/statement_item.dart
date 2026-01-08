@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_byte_bank/theme/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StatementItem extends StatelessWidget {
   final int id;
   final String date; // ISO string
   final String type; // "Depósito" | "Transferência"
   final double value;
+  final String? receiptUrl;
   final VoidCallback? onClick;
   final bool isClickable;
   final bool isSelected;
@@ -17,6 +19,7 @@ class StatementItem extends StatelessWidget {
     required this.date,
     required this.type,
     required this.value,
+    this.receiptUrl,
     this.onClick,
     this.isClickable = false,
     this.isSelected = false,
@@ -82,46 +85,96 @@ class StatementItem extends StatelessWidget {
               ),
             ),
 
-            // Linha: tipo e data
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // LADO ESQUERDO: tipo + valor
                 Expanded(
-                  child: Text(
-                    type,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                      color: AppColors.secondaryText,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        type,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                          color: AppColors.secondaryText,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        _formatBRLCurrency(amount),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: AppColors.secondaryText,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+
                 const SizedBox(width: 8),
-                Text(
-                  _dateBR(date),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 13,
-                    color: AppColors.thirdText,
-                  ),
+
+                // LADO DIREITO: data + recibo
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      _dateBR(date),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 13,
+                        color: AppColors.thirdText,
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 6),
+
+                    if (receiptUrl != null)
+                      TextButton.icon(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          foregroundColor: AppColors.thirdColor, // 👈 mesma cor do mês
+                        ),
+                        icon: const Icon(
+                          Icons.receipt,
+                          size: 16,
+                          color: AppColors.thirdColor, // 👈 garante no ícone
+                        ),
+                        label: const Text(
+                          'Ver recibo',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        onPressed: () async {
+                          final uri = Uri.parse(receiptUrl!);
+
+                          if (!await canLaunchUrl(uri)) {
+                            debugPrint('Não foi possível abrir o recibo: $uri');
+                            return;
+                          }
+
+                          await launchUrl(
+                            uri,
+                            mode: LaunchMode.externalApplication, // 👈 essencial
+                          );
+                        },
+                      ),
+                  ],
                 ),
               ],
-            ),
-
-            // Valor
-            Text(
-              _formatBRLCurrency(amount),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: AppColors.secondaryText,
-              ),
             ),
 
             // Divider

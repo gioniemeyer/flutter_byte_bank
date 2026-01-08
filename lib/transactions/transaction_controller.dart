@@ -38,22 +38,27 @@ class TransactionController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addTransaction({
-    required String type, // "Depósito" | "Transferência"
+  String addTransaction({
+    required String type,
     required double value,
     DateTime? date,
+    String? receiptUrl,
   }) {
     final id =
         '${DateTime.now().microsecondsSinceEpoch}-${Random().nextInt(999999)}';
+
     _transactions.add(
       TransactionModel(
         id: id,
         date: date ?? DateTime.now(),
         type: type,
         value: value,
+        receiptUrl: receiptUrl,
       ),
     );
+
     notifyListeners();
+    return id; // 👈 importante
   }
 
   void editTransaction(
@@ -61,15 +66,20 @@ class TransactionController extends ChangeNotifier {
     required String type,
     required double value,
     DateTime? date,
+    String? receiptUrl,
   }) {
     final index = _transactions.indexWhere((t) => t.id == id);
     if (index == -1) return;
+
     final current = _transactions[index];
+
     _transactions[index] = current.copyWith(
       type: type,
       value: value,
       date: date ?? current.date,
+      receiptUrl: receiptUrl ?? current.receiptUrl,
     );
+
     notifyListeners();
   }
 
@@ -79,5 +89,15 @@ class TransactionController extends ChangeNotifier {
       _transactions.removeAt(index);
       notifyListeners();
     }
+  }
+
+  void updateReceipt(String id, String receiptUrl) {
+    final index = _transactions.indexWhere((t) => t.id == id);
+    if (index == -1) return;
+
+    _transactions[index] =
+        _transactions[index].copyWith(receiptUrl: receiptUrl);
+
+    notifyListeners();
   }
 }

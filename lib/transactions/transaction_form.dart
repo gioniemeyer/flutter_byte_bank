@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile_byte_bank/theme/colors.dart';
 import 'transaction_controller.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class TransactionForm extends StatefulWidget {
   final VoidCallback? onCancel;
@@ -16,6 +20,9 @@ class _TransactionFormState extends State<TransactionForm> {
   String? type;
   final TextEditingController valueController = TextEditingController();
   String? error;
+  File? receiptFile;
+  bool uploading = false;
+
 
   @override
   void didChangeDependencies() {
@@ -55,16 +62,42 @@ class _TransactionFormState extends State<TransactionForm> {
     }
   }
 
-  void _submit() {
+  Future<void> _pickReceipt() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+
+    if (picked != null) {
+      setState(() {
+        receiptFile = File(picked.path);
+      });
+    }
+  }
+
+  Future<String?> _uploadReceipt(String transactionId) async {
+    if (receiptFile == null) return null;
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return null;
+
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('receipts')
+        .child(user.uid)
+        .child('$transactionId.jpg');
+
+    await ref.putFile(receiptFile!);
+    return await ref.getDownloadURL();
+  }
+
+  Future<void> _submit() async {
     final controller = context.read<TransactionController>();
     final editingId = controller.editingId;
 
     final value = valueController.text.trim();
     final typeValue = type;
-
     final valueRegex = RegExp(r'^\d+,\d{2}$');
 
-    if (typeValue == null || typeValue.isEmpty) {
+    if (typeValue == null) {
       setState(() => error = 'Selecione o tipo de transação');
       return;
     }
@@ -77,17 +110,38 @@ class _TransactionFormState extends State<TransactionForm> {
     final parsed = double.parse(value.replaceAll(',', '.'));
     final typeLabel = typeValue == 'd' ? 'Depósito' : 'Transferência';
 
+    setState(() => uploading = true);
+
     if (editingId != null) {
-      controller.editTransaction(editingId, type: typeLabel, value: parsed);
+      final receiptUrl = await _uploadReceipt(editingId);
+
+      controller.editTransaction(
+        editingId,
+        type: typeLabel,
+        value: parsed,
+        receiptUrl: receiptUrl,
+      );
+
       controller.setEditingId(null);
       widget.onCancel?.call();
     } else {
-      controller.addTransaction(type: typeLabel, value: parsed);
+      final newId = await controller.addTransaction(
+        type: typeLabel,
+        value: parsed,
+      );
+
+      final receiptUrl = await _uploadReceipt(newId);
+
+      if (receiptUrl != null) {
+        controller.updateReceipt(newId, receiptUrl);
+      }
     }
 
     setState(() {
       type = null;
       valueController.text = '';
+      receiptFile = null;
+      uploading = false;
       error = null;
     });
   }
@@ -261,6 +315,39 @@ class _TransactionFormState extends State<TransactionForm> {
                         ),
                       ),
                     ],
+
+                    const SizedBox(height: 16),
+
+                    SizedBox(
+                      width: fieldWidth,
+                      height: 32,
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.attach_file),
+                        label: Text(
+                          receiptFile == null
+                              ? 'Anexar arquivo'
+                              : 'Arquivo selecionado',
+                        ),
+                        onPressed: _pickReceipt,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          disabledBackgroundColor: AppColors.thirdText,
+                          disabledForegroundColor: AppColors.primaryText,
+                        ),
+                      ),
+                    ),
+
+                    if (receiptFile != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          receiptFile!.path.split('/').last,
+                          style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ),
                   ],
                 ),
               ),
