@@ -44,6 +44,14 @@ class _StatementState extends State<Statement> {
     super.dispose();
   }
 
+  late final Stream<List<TransactionModel>> _transactionsStream;
+  @override
+  void initState() {
+    super.initState();
+    _transactionsStream =
+        context.read<TransactionController>().watchTransactions();
+  }
+
   void _toggleEditMode(TransactionController controller) {
     setState(() {
       editMode = !editMode;
@@ -89,7 +97,7 @@ class _StatementState extends State<Statement> {
     final controller = context.watch<TransactionController>();
 
     return StreamBuilder<List<TransactionModel>>(
-      stream: controller.watchTransactions(),
+      stream: _transactionsStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -324,12 +332,11 @@ class _StatementState extends State<Statement> {
               // Lista com scroll — altura ligeiramente maior para evitar overflow
               SizedBox(
                 height: 396, // 380 + 16 de respiro para evitar overflow
-                child: SingleChildScrollView(
-                  key: const PageStorageKey('statement-scroll'),
+                child: ListView.builder(
                   controller: _scrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Column(
-                    children: paginated.map((t) {
+                  itemCount: paginated.length,
+                  itemBuilder: (context, index) {
+                    final t = paginated[index];
                       return StatementItem(
                         key: ValueKey(t.id),
                         id: t.id,
@@ -348,8 +355,7 @@ class _StatementState extends State<Statement> {
                           }
                         },
                       );
-                    }).toList(),
-                  ),
+                  },
                 ),
               ),
 
