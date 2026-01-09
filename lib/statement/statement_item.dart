@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_byte_bank/statement/file_viwer.dart';
 import 'package:mobile_byte_bank/theme/colors.dart';
 
 class StatementItem extends StatelessWidget {
-  final int id;
+  final String id;
   final String date; // ISO string
   final String type; // "Depósito" | "Transferência"
   final double value;
+  final String? receiptUrl;
   final VoidCallback? onClick;
   final bool isClickable;
   final bool isSelected;
@@ -17,6 +19,7 @@ class StatementItem extends StatelessWidget {
     required this.date,
     required this.type,
     required this.value,
+    this.receiptUrl,
     this.onClick,
     this.isClickable = false,
     this.isSelected = false,
@@ -58,7 +61,6 @@ class StatementItem extends StatelessWidget {
       onTap: isClickable ? onClick : null,
       child: Container(
         margin: const EdgeInsets.all(8),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         clipBehavior: Clip.hardEdge, // evita overflow visual no web
         decoration: BoxDecoration(
           color: isSelected ? AppColors.background : Colors.transparent,
@@ -83,46 +85,89 @@ class StatementItem extends StatelessWidget {
               ),
             ),
 
-            // Linha: tipo e data
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // LADO ESQUERDO: tipo + valor
                 Expanded(
-                  child: Text(
-                    type,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                      color: AppColors.secondaryText,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        type,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                          color: AppColors.secondaryText,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        _formatBRLCurrency(amount),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: AppColors.secondaryText,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+
                 const SizedBox(width: 8),
-                Text(
-                  _dateBR(date),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 13,
-                    color: AppColors.thirdText,
-                  ),
+
+                // LADO DIREITO: data + recibo
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      _dateBR(date),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 13,
+                        color: AppColors.thirdText,
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 6),
+
+                    if (receiptUrl != null)
+                      TextButton.icon(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          foregroundColor: AppColors.thirdColor,
+                        ),
+                        icon: const Icon(
+                          Icons.receipt,
+                          size: 16,
+                          color: AppColors.thirdColor,
+                        ),
+                        label: const Text(
+                          'Ver recibo',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => FileViewer(receiptUrl: receiptUrl!),
+                          );
+                        },
+                      ),
+                  ],
                 ),
               ],
-            ),
-
-            // Valor
-            Text(
-              _formatBRLCurrency(amount),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: AppColors.secondaryText,
-              ),
             ),
 
             // Divider

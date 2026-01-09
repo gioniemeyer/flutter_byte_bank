@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mobile_byte_bank/theme/colors.dart';
 import 'transaction_controller.dart';
 
@@ -16,6 +18,9 @@ class _TransactionFormState extends State<TransactionForm> {
   String? type;
   final TextEditingController valueController = TextEditingController();
   String? error;
+  File? receiptFile;
+  bool uploading = false;
+  String? receiptFileName;
 
   @override
   void didChangeDependencies() {
@@ -28,43 +33,45 @@ class _TransactionFormState extends State<TransactionForm> {
     final tx = controller.editingTransaction;
 
     if (controller.editingId != null && tx != null && tx.id.isNotEmpty) {
-      setState(() {
-        type = tx.type == 'Depósito' ? 'd' : 't';
-        valueController.text = tx.value.toStringAsFixed(2).replaceAll('.', ',');
-        error = null;
-      });
+      type = tx.type == 'Depósito' ? 'd' : 't';
+      valueController.text = tx.value.toStringAsFixed(2).replaceAll('.', ',');
     } else {
-      setState(() {
-        type = null;
-        valueController.text = '';
-        error = null;
-      });
+      type = null;
+      valueController.clear();
     }
   }
 
   void _onValueChanged(String input) {
     final regex = RegExp(r'^\d*(,?\d{0,2})?$');
     if (regex.hasMatch(input)) {
+      valueController.value = valueController.value.copyWith(
+        text: input,
+        selection: TextSelection.collapsed(offset: input.length),
+      );
+      setState(() => error = null);
+    }
+  }
+
+  Future<void> _pickReceipt() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+
+    if (picked != null) {
       setState(() {
-        valueController.text = input;
-        valueController.selection = TextSelection.fromPosition(
-          TextPosition(offset: valueController.text.length),
-        );
-        error = null;
+        receiptFile = File(picked.path);
+        receiptFileName = picked.name;
       });
     }
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     final controller = context.read<TransactionController>();
     final editingId = controller.editingId;
 
     final value = valueController.text.trim();
-    final typeValue = type;
-
     final valueRegex = RegExp(r'^\d+,\d{2}$');
 
-    if (typeValue == null || typeValue.isEmpty) {
+    if (type == null) {
       setState(() => error = 'Selecione o tipo de transação');
       return;
     }
@@ -75,29 +82,56 @@ class _TransactionFormState extends State<TransactionForm> {
     }
 
     final parsed = double.parse(value.replaceAll(',', '.'));
-    final typeLabel = typeValue == 'd' ? 'Depósito' : 'Transferência';
+    final typeLabel = type == 'd' ? 'Depósito' : 'Transferência';
 
-    if (editingId != null) {
-      controller.editTransaction(editingId, type: typeLabel, value: parsed);
+    setState(() => uploading = true);
+
+    try {
+      if (editingId != null) {
+        await controller.editTransaction(
+          editingId,
+          type: typeLabel,
+          value: parsed,
+        );
+
+        if (receiptFile != null) {
+          await controller.uploadReceipt(
+            transactionId: editingId,
+            file: receiptFile!,
+          );
+        }
+      } else {
+        final newId = await controller.addTransaction(
+          type: typeLabel,
+          value: parsed,
+        );
+
+        if (receiptFile != null) {
+          await controller.uploadReceipt(
+            transactionId: newId,
+            file: receiptFile!,
+          );
+        }
+      }
+
       controller.setEditingId(null);
       widget.onCancel?.call();
-    } else {
-      controller.addTransaction(type: typeLabel, value: parsed);
+    } finally {
+      setState(() {
+        uploading = false;
+        receiptFile = null;
+        receiptFileName = null; 
+        type = null;
+        valueController.clear();
+        error = null;
+      });
     }
-
-    setState(() {
-      type = null;
-      valueController.text = '';
-      error = null;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<TransactionController>();
-    final editingId = controller.editingId;
+    final editingId = context.watch<TransactionController>().editingId;
 
-    final double maxHeight = MediaQuery.of(context).size.height * 0.7;
     const double fieldWidth = 260;
 
     return SafeArea(
@@ -108,164 +142,187 @@ class _TransactionFormState extends State<TransactionForm> {
           left: 24,
           right: 24,
         ),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: maxHeight),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+        child: Column(
+          children: [
+            // Tipo
+            Container(
+              height: 48,
+              width: fieldWidth,
+              decoration: BoxDecoration(
+                color: AppColors.primaryText,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: AppColors.primaryColor,
+                    width: 1,
+                  ),
+                ),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              alignment: Alignment.center,
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: type,
+                  hint: Text(
+                    'Tipo de transação',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'd',
+                      child: Text('Depósito'),
+                    ),
+                    DropdownMenuItem(
+                      value: 't',
+                      child: Text('Transferência'),
+                    ),
+                  ],
+                  onChanged: (val) => setState(() => type = val),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+            const Text(
+              'Valor',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: AppColors.thirdText,
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Valor
+            SizedBox(
+              width: fieldWidth,
+              child: TextField(
+                controller: valueController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: '00,00',
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                  ),
+                  filled: true,
+                  fillColor: AppColors.primaryText,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(
+                      color: AppColors.primaryColor,
+                      width: 1,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(
+                      color: AppColors.primaryColor,
+                      width: 1,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(
+                      color: AppColors.primaryColor,
+                      width: 1,
+                    ),
+                  ),
+                  helperText: error,
+                  helperStyle: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 12,
+                  ),
+                ),
+                onChanged: _onValueChanged,
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Botão salvar
+            SizedBox(
+              width: fieldWidth,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: uploading ? null : _submit,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                  foregroundColor: AppColors.primaryText,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  disabledBackgroundColor: AppColors.thirdText,
+                  disabledForegroundColor: AppColors.primaryText,
+                ),
+                child: Text(
+                  editingId != null
+                      ? 'Salvar edição'
+                      : 'Concluir transação',
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // Anexar arquivo
+            SizedBox(
+              width: fieldWidth,
+              height: 32,
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.attach_file),
+                label: Text(
+                  receiptFile == null
+                      ? 'Anexar arquivo'
+                      : 'Arquivo selecionado',
+                ),
+                onPressed: uploading ? null : _pickReceipt,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  disabledBackgroundColor: AppColors.thirdText,
+                  disabledForegroundColor: AppColors.primaryText,
+                ),
+              ),
+            ),
+
+            if (receiptFileName != null) ...[
+              const SizedBox(height: 16),
+              SizedBox(
+                width: fieldWidth,
+                child: Row(
                   children: [
-                    // Dropdown tipo
-                    Container(
-                      height: 48,
-                      width: fieldWidth,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryText,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
+                    Expanded(
+                      child: Text(
+                        receiptFileName!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.thirdText,
+                        ),
+                      ),
+                    ),
+
+                    GestureDetector(
+                      onTap: () { uploading ? null : setState(() {
+                          receiptFile = null;
+                          receiptFileName = null;
+                        });
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(4),
+                        child: Icon(
+                          Icons.close,
+                          size: 16,
                           color: AppColors.primaryColor,
-                          width: 1,
-                        ),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      alignment: Alignment.center,
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: type,
-                          hint: Text(
-                            'Tipo de transação',
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                          items: const [
-                            DropdownMenuItem(
-                              value: 'd',
-                              child: Text('Depósito'),
-                            ),
-                            DropdownMenuItem(
-                              value: 't',
-                              child: Text('Transferência'),
-                            ),
-                          ],
-                          onChanged: (val) => setState(() => type = val),
                         ),
                       ),
                     ),
-
-                    const SizedBox(height: 24),
-                    const Text(
-                      'Valor',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        color: AppColors.thirdText,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-
-                    // Campo valor
-                    SizedBox(
-                      width: fieldWidth,
-                      height: 48,
-                      child: TextField(
-                        controller: valueController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: '00,00',
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                          ),
-                          filled: true,
-                          fillColor: AppColors.primaryText,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                              color: AppColors.primaryColor,
-                              width: 1,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                              color: AppColors.primaryColor,
-                              width: 1,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                              color: AppColors.primaryColor,
-                              width: 1,
-                            ),
-                          ),
-                          helperText: error,
-                          helperStyle: const TextStyle(
-                            color: Colors.red,
-                            fontSize: 12,
-                          ),
-                        ),
-                        onChanged: _onValueChanged,
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Botões
-                    SizedBox(
-                      width: fieldWidth,
-                      height: 48,
-                      child: ElevatedButton(
-                        onPressed:
-                            (type == null || valueController.text.isEmpty)
-                            ? null
-                            : _submit,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryColor,
-                          foregroundColor: AppColors.primaryText,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          disabledBackgroundColor: AppColors.thirdText,
-                          disabledForegroundColor: AppColors.primaryText,
-                        ),
-                        child: Text(
-                          editingId != null
-                              ? 'Salvar edição'
-                              : 'Concluir transação',
-                        ),
-                      ),
-                    ),
-
-                    if (editingId != null) ...[
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        width: fieldWidth,
-                        height: 48,
-                        child: OutlinedButton(
-                          onPressed: () {
-                            controller.setEditingId(null);
-                            widget.onCancel?.call();
-                          },
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.primaryColor,
-                            side: const BorderSide(
-                              color: AppColors.primaryColor,
-                              width: 1,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: const Text('Cancelar'),
-                        ),
-                      ),
-                    ],
                   ],
                 ),
               ),
             ],
-          ),
+          ],
         ),
       ),
     );
