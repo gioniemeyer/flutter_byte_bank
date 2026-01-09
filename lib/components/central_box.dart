@@ -17,7 +17,7 @@ class CentralBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const lateralPadding = 16.0;
-    const topOffset = 48.0;
+    const topOffset = 24.0;
 
     final bgColor = content == 'welcome'
         ? AppColors.primaryColor
@@ -82,7 +82,7 @@ class CentralBox extends StatelessWidget {
 
       case 'investments':
         return const SizedBox(
-          // height: 200,
+          height: 200,
           child: Center(
             child: Text(
               'Investimentos (em construção)',

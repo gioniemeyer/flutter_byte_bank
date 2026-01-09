@@ -33,7 +33,6 @@ class WelcomeImages extends StatelessWidget {
           ),
           Positioned(
             bottom: 34,
-            left: 14,
             child: _DecorImage(
               key: Key('illustration1'),
               asset: 'assets/images/illustration1.png',
