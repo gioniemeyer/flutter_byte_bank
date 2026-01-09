@@ -20,15 +20,11 @@ class TransactionModel {
   ) {
     final data = doc.data();
 
-    final timestamp = data['date'];
-
     return TransactionModel(
       id: doc.id,
       type: data['type'] as String,
       value: (data['value'] as num).toDouble(),
-      date: timestamp is Timestamp
-          ? timestamp.toDate()
-          : DateTime.now(),
+      date: (data['date'] as Timestamp).toDate(),
       receiptUrl: data['receiptUrl'] as String?,
     );
   }

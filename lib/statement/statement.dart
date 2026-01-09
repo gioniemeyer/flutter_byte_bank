@@ -109,8 +109,6 @@ class _StatementState extends State<Statement> {
           return _matchesFilters(t.date, t.type);
         }).toList();
 
-        filtered.sort((a, b) => b.date.compareTo(a.date));
-
         // Total de páginas
         final totalPages = filtered.isEmpty
             ? 1
