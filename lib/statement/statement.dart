@@ -164,6 +164,7 @@ class _StatementState extends State<Statement> {
                               
                             showModalBottomSheet(
                               context: context,
+                              isScrollControlled: true,
                               backgroundColor: AppColors.primaryText,
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.vertical(
@@ -171,127 +172,132 @@ class _StatementState extends State<Statement> {
                                 ),
                               ),
                               builder: (ctx) {
-                                return StatefulBuilder(
-                                  builder: (ctx, setModalState) => Padding(
-                                    padding: const EdgeInsets.all(16),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          'Filtros',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 18,
-                                            color: AppColors.secondaryText,
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(ctx).viewInsets.bottom, // 🔴 empurra com teclado
+                                  ),
+                                  child: StatefulBuilder(
+                                    builder: (ctx, setModalState) => Padding(
+                                      padding: const EdgeInsets.all(16),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Filtros',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 18,
+                                              color: AppColors.secondaryText,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 12),
+                                          const SizedBox(height: 12),
 
-                                        // ===== MÊS =====
-                                        TextField(
-                                          controller: monthController,
-                                          decoration: InputDecoration(
-                                            labelText: 'Mês (ex: junho)',
-                                            border: OutlineInputBorder(
+                                          // ===== MÊS =====
+                                          TextField(
+                                            controller: monthController,
+                                            decoration: InputDecoration(
+                                              labelText: 'Mês (ex: junho)',
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(8),
+                                                borderSide: const BorderSide(
+                                                  color: AppColors.primaryColor,
+                                                  width: 1,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 12),
+
+                                          // ===== TIPO =====
+                                          Container(
+                                            height: 48,
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                              color: AppColors.primaryText,
                                               borderRadius: BorderRadius.circular(8),
-                                              borderSide: const BorderSide(
+                                              border: Border.all(
                                                 color: AppColors.primaryColor,
                                                 width: 1,
                                               ),
                                             ),
-                                          ),
-                                        ),
-
-                                        const SizedBox(height: 12),
-
-                                        // ===== TIPO =====
-                                        Container(
-                                          height: 48,
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            color: AppColors.primaryText,
-                                            borderRadius: BorderRadius.circular(8),
-                                            border: Border.all(
-                                              color: AppColors.primaryColor,
-                                              width: 1,
-                                            ),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                                          alignment: Alignment.centerLeft,
-                                          child: DropdownButtonHideUnderline(
-                                            child: DropdownButton<String>(
-                                              value: tempType.isEmpty ? null : tempType,
-                                              hint: Text(
-                                                'Tipo',
-                                                style: TextStyle(color: Colors.grey[600]),
-                                              ),
-                                              items: const [
-                                                DropdownMenuItem(
-                                                  value: 'Depósito',
-                                                  child: Text('Depósito'),
+                                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                                            alignment: Alignment.centerLeft,
+                                            child: DropdownButtonHideUnderline(
+                                              child: DropdownButton<String>(
+                                                value: tempType.isEmpty ? null : tempType,
+                                                hint: Text(
+                                                  'Tipo',
+                                                  style: TextStyle(color: Colors.grey[600]),
                                                 ),
-                                                DropdownMenuItem(
-                                                  value: 'Transferência',
-                                                  child: Text('Transferência'),
-                                                ),
-                                              ],
-                                              onChanged: (val) {
-                                                setModalState(() {
-                                                  tempType = val ?? '';
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ),
-
-                                        const SizedBox(height: 16),
-
-                                        // ===== APLICAR =====
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: OutlinedButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    filterMonth = monthController.text;
-                                                    filterType = tempType;
-                                                    page = 1;
+                                                items: const [
+                                                  DropdownMenuItem(
+                                                    value: 'Depósito',
+                                                    child: Text('Depósito'),
+                                                  ),
+                                                  DropdownMenuItem(
+                                                    value: 'Transferência',
+                                                    child: Text('Transferência'),
+                                                  ),
+                                                ],
+                                                onChanged: (val) {
+                                                  setModalState(() {
+                                                    tempType = val ?? '';
                                                   });
-                                                  Navigator.pop(ctx);
                                                 },
-                                                style: OutlinedButton.styleFrom(
-                                                  foregroundColor: AppColors.primaryColor,
-                                                  side: const BorderSide(
-                                                    color: AppColors.primaryColor,
-                                                    width: 1,
+                                              ),
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 16),
+
+                                          // ===== APLICAR =====
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: OutlinedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      filterMonth = monthController.text;
+                                                      filterType = tempType;
+                                                      page = 1;
+                                                    });
+                                                    Navigator.pop(ctx);
+                                                  },
+                                                  style: OutlinedButton.styleFrom(
+                                                    foregroundColor: AppColors.primaryColor,
+                                                    side: const BorderSide(
+                                                      color: AppColors.primaryColor,
+                                                      width: 1,
+                                                    ),
+                                                  ),
+                                                  child: const Text('Aplicar'),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: TextButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      filterMonth = '';
+                                                      filterType = '';
+                                                      page = 1;
+                                                    });
+                                                    Navigator.pop(ctx);
+                                                  },
+                                                  child: const Text(
+                                                    'Limpar',
+                                                    style: TextStyle(color: AppColors.primaryColor),
                                                   ),
                                                 ),
-                                                child: const Text('Aplicar'),
                                               ),
-                                            ),
-                                            const SizedBox(width: 12),
-                                            Expanded(
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    filterMonth = '';
-                                                    filterType = '';
-                                                    page = 1;
-                                                  });
-                                                  Navigator.pop(ctx);
-                                                },
-                                                child: const Text(
-                                                  'Limpar',
-                                                  style: TextStyle(color: AppColors.primaryColor),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                            ],
+                                          ),
 
-                                        const SizedBox(height: 8),
-                                      ],
+                                          const SizedBox(height: 8),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 );
