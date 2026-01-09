@@ -273,7 +273,7 @@ class _TransactionFormState extends State<TransactionForm> {
                       ? 'Anexar arquivo'
                       : 'Arquivo selecionado',
                 ),
-                onPressed: _pickReceipt,
+                onPressed: uploading ? null : _pickReceipt,
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primaryColor,
                   shape: RoundedRectangleBorder(
@@ -304,8 +304,7 @@ class _TransactionFormState extends State<TransactionForm> {
                     ),
 
                     GestureDetector(
-                      onTap: () {
-                        setState(() {
+                      onTap: () { uploading ? null : setState(() {
                           receiptFile = null;
                           receiptFileName = null;
                         });
