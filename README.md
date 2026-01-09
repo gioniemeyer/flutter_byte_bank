@@ -1,16 +1,144 @@
-# mobile_byte_bank
+# 💰 Flutter Byte Bank
 
-A new Flutter project.
+Aplicação mobile desenvolvida em **Flutter** para controle de transações financeiras, permitindo:
 
-## Getting Started
+-   Cadastro de transações (Depósito e Transferência)
+-   Upload de comprovantes (imagens) via **Firebase Storage**
+-   Autenticação de usuários com **Firebase Authentication**
+-   Persistência de dados no **Cloud Firestore**
+-   Filtros, paginação e edição/exclusão de transações
 
-This project is a starting point for a Flutter application.
+Projeto focado em **Flutter Mobile (Android)**.
 
-A few resources to get you started if this is your first Flutter project:
+------------------------------------------------------------------------
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 🚀 Tecnologias Utilizadas
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+-   Flutter (SDK estável)
+-   Dart
+-   Firebase (Authentication, Cloud Firestore, Storage)
+-   Provider
+-   Image Picker
+-   Intl
+
+------------------------------------------------------------------------
+
+## 📋 Pré-requisitos
+
+-   Flutter SDK
+-   Android Studio
+-   Android SDK configurado
+-   Emulador Android ou dispositivo físico
+-   Conta no Firebase
+
+
+------------------------------------------------------------------------
+
+## 🔥 Configuração do Firebase
+
+### Android
+
+-   Crie um projeto no Firebase
+-   Adicione um app Android com o applicationId:
+    `com.example.mobile_byte_bank`
+-   Baixe o arquivo `google-services.json`
+-   Salve em: `android/app/google-services.json`
+
+------------------------------------------------------------------------
+
+## 🔐 Firebase Authentication
+
+-   Ative **Email/Senha** em Authentication
+
+------------------------------------------------------------------------
+
+## 📦 Cloud Firestore
+
+### Estrutura utilizada
+
+    users
+     └── {uid}
+          └── transactions
+               └── {transactionId}
+
+### Exemplo de documento
+
+``` json
+{
+  "type": "Depósito",
+  "value": 150.75,
+  "date": "2025-06-20T14:32:00.000",
+  "receiptUrl": "https://..."
+}
+```
+
+### Regras
+
+``` js
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/transactions/{docId} {
+      allow read, write: if request.auth != null
+        && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+------------------------------------------------------------------------
+
+## 🖼 Firebase Storage
+
+Estrutura:
+
+    receipts/{uid}/{transactionId}.jpg
+
+Regras:
+
+``` js
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /receipts/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null
+        && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+------------------------------------------------------------------------
+
+## 📦 Dependências
+
+``` yaml
+firebase_core
+firebase_auth
+cloud_firestore
+firebase_storage
+provider
+image_picker
+intl
+```
+
+------------------------------------------------------------------------
+
+## ▶️ Executar o projeto
+
+``` bash
+git clone https://github.com/gioniemeyer/flutter_byte_bank
+cd flutter_byte_bank
+flutter pub get
+flutter run
+```
+
+------------------------------------------------------------------------
+
+## 📱 Observações Importantes
+
+Teste final realizado em dispositivo físico.
+
+Recomenda-se validar funcionalidades em dispositivo real.
+
+O comportamento de teclado e foco pode variar entre emulador e dispositivo físico.
