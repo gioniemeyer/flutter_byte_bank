@@ -19,7 +19,6 @@ Projeto focado em **Flutter Mobile (Android)**.
 -   Firebase (Authentication, Cloud Firestore, Storage)
 -   Provider
 -   Image Picker
--   Intl
 
 ------------------------------------------------------------------------
 
@@ -119,7 +118,6 @@ cloud_firestore
 firebase_storage
 provider
 image_picker
-intl
 ```
 
 ------------------------------------------------------------------------
