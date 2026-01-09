@@ -20,6 +20,7 @@ class _TransactionFormState extends State<TransactionForm> {
   String? error;
   File? receiptFile;
   bool uploading = false;
+  String? receiptFileName;
 
   @override
   void didChangeDependencies() {
@@ -58,6 +59,7 @@ class _TransactionFormState extends State<TransactionForm> {
     if (picked != null) {
       setState(() {
         receiptFile = File(picked.path);
+        receiptFileName = picked.name;
       });
     }
   }
@@ -118,6 +120,7 @@ class _TransactionFormState extends State<TransactionForm> {
       setState(() {
         uploading = false;
         receiptFile = null;
+        receiptFileName = null; 
         type = null;
         valueController.clear();
         error = null;
@@ -281,6 +284,45 @@ class _TransactionFormState extends State<TransactionForm> {
                 ),
               ),
             ),
+
+            if (receiptFileName != null) ...[
+              const SizedBox(height: 16),
+              SizedBox(
+                width: fieldWidth,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        receiptFileName!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.thirdText,
+                        ),
+                      ),
+                    ),
+
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          receiptFile = null;
+                          receiptFileName = null;
+                        });
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(4),
+                        child: Icon(
+                          Icons.close,
+                          size: 16,
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
       ),
