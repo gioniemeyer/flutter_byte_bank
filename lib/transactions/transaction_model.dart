@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class TransactionModel {
   final String id;
   final DateTime date;
@@ -13,19 +15,21 @@ class TransactionModel {
     this.receiptUrl,
   });
 
-  TransactionModel copyWith({
-    String? id,
-    DateTime? date,
-    String? type,
-    double? value,
-    String? receiptUrl,
-  }) {
+  factory TransactionModel.fromFirestore(
+    QueryDocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
+    final data = doc.data();
+
+    final timestamp = data['date'];
+
     return TransactionModel(
-      id: id ?? this.id,
-      date: date ?? this.date,
-      type: type ?? this.type,
-      value: value ?? this.value,
-      receiptUrl: receiptUrl ?? this.receiptUrl,
+      id: doc.id,
+      type: data['type'] as String,
+      value: (data['value'] as num).toDouble(),
+      date: timestamp is Timestamp
+          ? timestamp.toDate()
+          : DateTime.now(),
+      receiptUrl: data['receiptUrl'] as String?,
     );
   }
 }

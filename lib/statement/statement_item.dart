@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_byte_bank/statement/file_viwer.dart';
 import 'package:mobile_byte_bank/theme/colors.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class StatementItem extends StatelessWidget {
-  final int id;
+  final String id;
   final String date; // ISO string
   final String type; // "Depósito" | "Transferência"
   final double value;
@@ -144,12 +144,12 @@ class StatementItem extends StatelessWidget {
                           padding: EdgeInsets.zero,
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          foregroundColor: AppColors.thirdColor, // 👈 mesma cor do mês
+                          foregroundColor: AppColors.thirdColor,
                         ),
                         icon: const Icon(
                           Icons.receipt,
                           size: 16,
-                          color: AppColors.thirdColor, // 👈 garante no ícone
+                          color: AppColors.thirdColor,
                         ),
                         label: const Text(
                           'Ver recibo',
@@ -158,17 +158,10 @@ class StatementItem extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        onPressed: () async {
-                          final uri = Uri.parse(receiptUrl!);
-
-                          if (!await canLaunchUrl(uri)) {
-                            debugPrint('Não foi possível abrir o recibo: $uri');
-                            return;
-                          }
-
-                          await launchUrl(
-                            uri,
-                            mode: LaunchMode.externalApplication, // 👈 essencial
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => FileViewer(receiptUrl: receiptUrl!),
                           );
                         },
                       ),

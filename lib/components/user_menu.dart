@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_byte_bank/routes.dart';
 import 'package:mobile_byte_bank/theme/colors.dart';
+import 'package:mobile_byte_bank/transactions/transaction_controller.dart';
+import 'package:provider/provider.dart';
 
 typedef VoidCallbackNullable = void Function()?;
 
@@ -26,13 +28,15 @@ class UserMenu extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () async {
+                      final controller = context.read<TransactionController>();
+
                       await FirebaseAuth.instance.signOut();
+                      controller.clear();
+
                       onClose?.call();
 
                       if (context.mounted) {
-                        Navigator.of(
-                          context,
-                        ).pushReplacementNamed(Routes.login);
+                        Navigator.of(context).pushReplacementNamed(Routes.login);
                       }
                     },
                     child: const SizedBox(

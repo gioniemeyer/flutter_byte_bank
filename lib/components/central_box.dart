@@ -53,18 +53,36 @@ class CentralBox extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
     final String nome = user?.displayName ?? 'Usuário';
     final controller = context.watch<TransactionController>();
-    final balance = controller.totalBalance;
 
     switch (content) {
       case 'welcome':
-        return Welcome(userName: nome, balance: balance);
+        return StreamBuilder(
+          stream: controller.watchTransactions(),
+          builder: (context, snapshot) {
+            final transactions = snapshot.data ?? [];
+
+            double total = 0;
+            for (final t in transactions) {
+              if (t.type == 'Depósito') {
+                total += t.value;
+              } else if (t.type == 'Transferência') {
+                total -= t.value;
+              }
+            }
+
+            return Welcome(
+              userName: nome,
+              balance: total,
+            );
+          },
+        );
 
       case 'transaction':
         return Transaction(selectedItem: selectedItem ?? 'Início');
 
       case 'investments':
         return const SizedBox(
-          height: 200,
+          // height: 200,
           child: Center(
             child: Text(
               'Investimentos (em construção)',
